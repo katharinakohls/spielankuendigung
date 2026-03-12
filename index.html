@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <base href="./" />
+  <title>Spielankündigung</title>
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+  <div class="page">
+    <aside class="controls">
+      <h1>Spielankündigung</h1>
+
+      <div class="field">
+        <input id="homeName" value="SuS Oberaden" />
+      </div>
+
+      <div class="field">
+        <label for="homeLogoPath">Pfad zum Heimlogo</label>
+        <input id="homeLogoPath" value="assets/home_logo.png" />
+      </div>
+
+      <div class="field">
+        <label>Begegnungen</label>
+
+        <div class="match-form" data-index="0">
+          <input id="oppName0" placeholder="Gegner 1" />
+          <input id="oppDate0" placeholder="Datum, z. B. Sonntag 22.02.26" />
+          <input id="oppTime0" placeholder="Uhrzeit, z. B. 17:15" />
+          <input id="oppLogo0" type="file" accept="image/*" />
+        </div>
+
+        <div class="match-form" data-index="1">
+          <input id="oppName1" placeholder="Gegner 2" />
+          <input id="oppDate1" placeholder="Datum" />
+          <input id="oppTime1" placeholder="Uhrzeit" />
+          <input id="oppLogo1" type="file" accept="image/*" />
+        </div>
+
+        <div class="match-form" data-index="2">
+          <input id="oppName2" placeholder="Gegner 3" />
+          <input id="oppDate2" placeholder="Datum" />
+          <input id="oppTime2" placeholder="Uhrzeit" />
+          <input id="oppLogo2" type="file" accept="image/*" />
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="renderBtn">Aktualisieren</button>
+        <button id="exportBtn" class="secondary">PNG exportieren</button>
+      </div>
+    </aside>
+
+    <main class="poster-wrap">
+      <canvas id="poster"></canvas>
+    </main>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

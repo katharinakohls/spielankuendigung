@@ -1,0 +1,129 @@
+import { BASE_W, BASE_H, DEFAULTS } from "../data/static-layout.js";
+import { asset, loadImage } from "./utils.js";
+import { drawPoster } from "./draw.js";
+
+const canvas = document.getElementById("poster");
+const ctx = canvas.getContext("2d");
+
+const els = {
+  homeName: document.getElementById("homeName"),
+  homeLogoPath: document.getElementById("homeLogoPath"),
+  matchesInput: document.getElementById("matchesInput"),
+  renderBtn: document.getElementById("renderBtn"),
+  exportBtn: document.getElementById("exportBtn")
+};
+
+let homeLogo = null;
+
+function setupCanvas() {
+  const cssW = Math.min(1050, window.innerWidth - 450);
+  const ratio = window.devicePixelRatio || 1;
+
+  canvas.style.width = cssW + "px";
+  canvas.style.height = Math.round(cssW * (BASE_H / BASE_W)) + "px";
+  canvas.width = Math.round(BASE_W * ratio);
+  canvas.height = Math.round(BASE_H * ratio);
+
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+}
+
+async function readMatch(index) {
+  const opponent = document.getElementById(`oppName${index}`).value.trim();
+  const date = document.getElementById(`oppDate${index}`).value.trim();
+  const time = document.getElementById(`oppTime${index}`).value.trim();
+  const logoInput = document.getElementById(`oppLogo${index}`);
+
+  if (!opponent && !date && !time) return null;
+
+  let logo = null;
+  const file = logoInput.files && logoInput.files[0];
+  if (file) {
+    logo = await loadImage(URL.createObjectURL(file));
+  }
+
+  return {
+    opponent: opponent || "Gegner",
+    date,
+    time,
+    logo
+  };
+}
+
+async function readMatches() {
+  const items = [];
+  for (let i = 0; i < 3; i++) {
+    const match = await readMatch(i);
+    if (match) items.push(match);
+  }
+  return items;
+}
+
+async function enrichMatchesWithLogos(matches) {
+  for (const match of matches) {
+    if (!match.logoPath) continue;
+    try {
+      match.logo = await loadImage(asset(match.logoPath));
+    } catch {
+      match.logo = null;
+    }
+  }
+  return matches;
+}
+
+async function loadHomeLogo() {
+  try {
+    homeLogo = await loadImage(asset(els.homeLogoPath.value.trim() || DEFAULTS.homeLogoPath));
+  } catch {
+    homeLogo = null;
+  }
+}
+
+function getBaseState(matches) {
+  return {
+    homeName: els.homeName.value.trim() || DEFAULTS.homeName,
+    matches,
+    homeLogo
+  };
+}
+
+async function render() {
+  await loadHomeLogo();
+  const matches = await readMatches();
+
+  drawPoster(ctx, BASE_W, BASE_H, {
+    homeName: els.homeName.value.trim() || DEFAULTS.homeName,
+    matches,
+    homeLogo
+  });
+}
+
+function exportPNG() {
+  const link = document.createElement("a");
+  link.download = "spielankuendigung.png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+}
+
+els.renderBtn.addEventListener("click", render);
+els.exportBtn.addEventListener("click", exportPNG);
+window.addEventListener("resize", () => {
+  setupCanvas();
+  render();
+});
+
+setupCanvas();
+els.homeName.value = DEFAULTS.homeName;
+els.homeLogoPath.value = DEFAULTS.homeLogoPath;
+render();
+
+document.getElementById("oppName0").value = "GS Cappenberg Damen";
+document.getElementById("oppDate0").value = "Sonntag 22.02.26";
+document.getElementById("oppTime0").value = "17:15";
+
+document.getElementById("oppName1").value = "TuS Niederaden Damen";
+document.getElementById("oppDate1").value = "Sonntag 01.03.26";
+document.getElementById("oppTime1").value = "15:00";
+
+document.getElementById("oppName2").value = "VfL Kamen Damen";
+document.getElementById("oppDate2").value = "Sonntag 08.03.26";
+document.getElementById("oppTime2").value = "16:30";
