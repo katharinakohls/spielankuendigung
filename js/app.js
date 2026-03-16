@@ -31,11 +31,10 @@ function setupCanvas() {
 
 async function readMatch(index) {
   const opponent = document.getElementById(`oppName${index}`).value.trim();
-  const date = document.getElementById(`oppDate${index}`).value.trim();
   const time = document.getElementById(`oppTime${index}`).value.trim();
   const logoInput = document.getElementById(`oppLogo${index}`);
 
-  if (!opponent && !date && !time) return null;
+  if (!opponent && !time) return null;
 
   let logo = null;
   const file = logoInput.files && logoInput.files[0];
@@ -45,7 +44,6 @@ async function readMatch(index) {
 
   return {
     opponent: opponent || "Gegner",
-    date,
     time,
     logo
   };
@@ -142,14 +140,6 @@ els.homeName.value = DEFAULTS.homeName;
 els.homeLogoPath.value = DEFAULTS.homeLogoPath;
 render();
 
-document.getElementById("oppName0").value = "GS Cappenberg Damen";
+document.getElementById("oppName0").value = "Gegner 1";
 document.getElementById("oppDate0").value = "Sonntag 22.02.26";
 document.getElementById("oppTime0").value = "17:15";
-
-document.getElementById("oppName1").value = "TuS Niederaden Damen";
-document.getElementById("oppDate1").value = "Sonntag 01.03.26";
-document.getElementById("oppTime1").value = "15:00";
-
-document.getElementById("oppName2").value = "VfL Kamen Damen";
-document.getElementById("oppDate2").value = "Sonntag 08.03.26";
-document.getElementById("oppTime2").value = "16:30";
