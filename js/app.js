@@ -1,6 +1,7 @@
 import { BASE_W, BASE_H, DEFAULTS } from "../data/static-layout.js";
 import { asset, loadImage } from "./utils.js";
 import { drawPoster } from "./draw.js";
+import { SPONSORS } from "../data/sponsors.js";
 
 const canvas = document.getElementById("poster");
 const ctx = canvas.getContext("2d");
@@ -10,7 +11,8 @@ const els = {
   homeLogoPath: document.getElementById("homeLogoPath"),
   matchesInput: document.getElementById("matchesInput"),
   renderBtn: document.getElementById("renderBtn"),
-  exportBtn: document.getElementById("exportBtn")
+  exportBtn: document.getElementById("exportBtn"),
+  matchDay: document.getElementById("matchDay")
 };
 
 let homeLogo = null;
@@ -58,6 +60,27 @@ async function readMatches() {
   return items;
 }
 
+async function loadSponsorLogos() {
+  const sponsors = Object.values(SPONSORS);
+
+  for (const sponsor of sponsors) {
+    if (!sponsor.logo) {
+      sponsor.logoImage = null;
+      continue;
+    }
+
+    try {
+      sponsor.logoImage = await loadImage(asset(sponsor.logo));
+
+      console.log("geladen:", sponsor.name, sponsor.logoImage);
+
+    } catch (err) {
+      sponsor.logoImage = null;
+      console.warn("Fehler beim Laden:", sponsor.logo);
+    }
+  }
+}
+
 async function enrichMatchesWithLogos(matches) {
   for (const match of matches) {
     if (!match.logoPath) continue;
@@ -88,10 +111,13 @@ function getBaseState(matches) {
 
 async function render() {
   await loadHomeLogo();
+  await loadSponsorLogos();
+
   const matches = await readMatches();
 
   drawPoster(ctx, BASE_W, BASE_H, {
     homeName: els.homeName.value.trim() || DEFAULTS.homeName,
+    matchDay: els.matchDay.value.trim(),
     matches,
     homeLogo
   });
