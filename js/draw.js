@@ -31,6 +31,81 @@ export function drawSponsorTile(ctx, sponsor, tile) {
   const centerX = x + w / 2;
   const hasLogo = !!sponsor.logoImage;
 
+  // --------------------------------------------------
+  // Variante 1: Text links / Logo rechts
+  // --------------------------------------------------
+  if (sponsor.layout === "text-logo" && hasLogo) {
+
+  const pad = 16;
+  const gap = 16;
+
+  const textW = Math.max(140, w * 0.56);
+  const logoW = w - pad * 2 - gap - textW;
+
+  const textX = x + pad;
+  const logoX = x + w - pad - logoW;
+
+  const centerY = y + h / 2;
+
+  ctx.save();
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+
+  // Titel
+  ctx.fillStyle = "#1f2c25";
+
+  const nameSize = fitText(
+    ctx,
+    sponsor.name,
+    textW,
+    26,
+    14,
+    800
+  );
+
+  ctx.font = `800 ${nameSize}px system-ui`;
+
+  ctx.fillText(
+    sponsor.name,
+    textX,
+    centerY - (sponsor.subtitle ? nameSize * 0.4 : 0)
+  );
+
+  // Subtitle optional
+  if (sponsor.subtitle) {
+
+    ctx.fillStyle = "#5e6b65";
+
+    ctx.font = "600 14px system-ui";
+
+    ctx.fillText(
+      sponsor.subtitle,
+      textX,
+      centerY + nameSize * 0.6
+    );
+  }
+
+  ctx.restore();
+
+  // Logo rechts – ebenfalls vertikal zentriert
+  const logoH = h * 0.65;
+
+  drawContain(
+    ctx,
+    sponsor.logoImage,
+    logoX,
+    centerY - logoH / 2,
+    logoW,
+    logoH,
+    2
+  );
+
+  return;
+}
+
+  // --------------------------------------------------
+  // Variante 2: Standard – Titel oben / Logo unten
+  // --------------------------------------------------
   const topPad = 14;
   const sidePad = 14;
   const bottomPad = 14;
@@ -39,9 +114,9 @@ export function drawSponsorTile(ctx, sponsor, tile) {
   ctx.textAlign = "center";
   ctx.textBaseline = "top";
 
-  // 1) Titel immer oben
   let cursorY = y + topPad;
 
+  // Titel
   ctx.fillStyle = "#1f2c25";
   const nameMaxWidth = w - sidePad * 2;
   const nameSize = isSmall
@@ -54,7 +129,7 @@ export function drawSponsorTile(ctx, sponsor, tile) {
   ctx.fillText(sponsor.name, centerX, cursorY);
   cursorY += nameSize + 6;
 
-  // 2) optional Subtitle / Zeilen in der Mitte
+  // Subtitle
   if (sponsor.subtitle && !isSmall) {
     ctx.fillStyle = "#5e6b65";
     const subtitleSize = isMedium ? 12 : 14;
@@ -63,6 +138,7 @@ export function drawSponsorTile(ctx, sponsor, tile) {
     cursorY += subtitleSize + 6;
   }
 
+  // Zusatzzeilen
   let maxLines = 0;
   if (isLarge && !hasLogo) maxLines = 2;
   if (isLarge && hasLogo) maxLines = 1;
@@ -80,21 +156,24 @@ export function drawSponsorTile(ctx, sponsor, tile) {
     }
   }
 
-  // 3) Logo immer unten
+  // Logo unten
   if (hasLogo) {
-    const logoH = isSmall ? 30 : isMedium ? 48 : 72;
-    const logoY = y + h - bottomPad - logoH;
 
-    drawContain(
-      ctx,
-      sponsor.logoImage,
-      x + 18,
-      logoY,
-      w - 36,
-      logoH,
-      2
-    );
-  }
+  const logoTop = cursorY + 6;
+  const logoBottom = y + h - bottomPad;
+
+  const logoH = Math.max(40, logoBottom - logoTop);
+
+  drawContain(
+    ctx,
+    sponsor.logoImage,
+    x + 18,
+    logoTop,
+    w - 36,
+    logoH,
+    2
+  );
+}
 
   ctx.restore();
 }
@@ -238,9 +317,15 @@ export function drawPoster(ctx, width, height, state) {
 
   // Mit Inhalt
   SPONSOR_TILES.forEach(tile => {
-    const sponsor = SPONSORS[tile.sponsorId];
-    if (!sponsor) return;
-    drawSponsorTile(ctx, sponsor, tile);
-  });
+  console.log("tile:", tile.sponsorId, tile.x, tile.y, tile.w, tile.h);
+
+  const sponsor = SPONSORS[tile.sponsorId];
+  if (!sponsor) {
+    console.warn("Kein Sponsor gefunden für:", tile.sponsorId);
+    return;
+  }
+
+  drawSponsorTile(ctx, sponsor, tile);
+});
   drawCenterPanel(ctx, state);
 }

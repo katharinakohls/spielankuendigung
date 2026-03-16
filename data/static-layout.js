@@ -48,7 +48,7 @@ export const SPONSOR_TILES = [
 
   // untere untere Reihe: einheitliche Höhe
   { sponsorId: "schaefer_fenster_tueren",     x: 20,   y: 990, w: 370, h: 170 },
-  { sponsorId: "schaefer_bestattungen",       x: 410,  y: 990, w: 370, h: 170 },
+  { sponsorId: "schaefer_kretschmer_bestattungen",       x: 410,  y: 990, w: 370, h: 170 },
   { sponsorId: "hoer_bedachungen",            x: 800,  y: 990, w: 370, h: 170 },
   { sponsorId: "druckerei_trost",             x: 1190, y: 990, w: 390, h: 170 }
 ];
