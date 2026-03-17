@@ -2,6 +2,25 @@ import { SPONSOR_TILES } from "../data/static-layout.js";
 import { SPONSORS } from "../data/sponsors.js";
 import { fillRounded, fitText, drawContain } from "./utils.js";
 
+const COLORS = {
+  pageBg: "#e3f1d5",
+
+  panelBg: "#ffffff",
+  panelBorder: "#C9D1C8",
+
+  textPrimary: "#1E2A22",
+  textSecondary: "#617066",
+
+  accent: "#000000",        // Hauptgrün
+  accentSoft: "#000000",
+
+  centerTop: "#c1dfa1",
+  centerBottom: "#F1F6F2",
+
+  cardBorder: "rgba(30,107,67,0.12)",
+  cardBg: "rgba(255,255,255,0.96)"
+};
+
 // Platzhalterfunktion
 // export function drawSponsorTile(ctx, tile) {
 //   fillRounded(ctx, tile.x, tile.y, tile.w, tile.h, 10, "#ffffff", "#d2d6d2", 2);
@@ -22,7 +41,7 @@ import { fillRounded, fitText, drawContain } from "./utils.js";
 export function drawSponsorTile(ctx, sponsor, tile) {
   const { x, y, w, h } = tile;
 
-  fillRounded(ctx, x, y, w, h, 12, "#ffffff", "#cfd4cf", 2);
+  fillRounded(ctx, x, y, w, h, 12, COLORS.panelBg, COLORS.panelBorder, 2);
 
   const layout = sponsor.layout || "horizontal";
   const hasLogo = !!sponsor.logoImage;
@@ -39,14 +58,14 @@ export function drawSponsorTile(ctx, sponsor, tile) {
 
     let cursorY = y + 14;
 
-    ctx.fillStyle = "#1f2c25";
+    ctx.fillStyle = COLORS.textPrimary;
     const nameSize = fitText(ctx, sponsor.name, w - 28, 22, 13, 800);
     ctx.font = `800 ${nameSize}px system-ui`;
     ctx.fillText(sponsor.name, x + w / 2, cursorY);
     cursorY += nameSize + 6;
 
     if (sponsor.subtitle) {
-      ctx.fillStyle = "#5e6b65";
+      ctx.fillStyle = COLORS.textSecondary;
       ctx.font = "600 12px system-ui";
       ctx.fillText(sponsor.subtitle, x + w / 2, cursorY);
       cursorY += 18;
@@ -114,6 +133,7 @@ export function drawSponsorTile(ctx, sponsor, tile) {
 }
 
 export function drawCenterPanel(ctx, state) {
+  
   const { matches, matchDay, homeLogo } = state;
   const visible = matches.slice(0, 3);
 
@@ -122,11 +142,12 @@ export function drawCenterPanel(ctx, state) {
   const w = 820;
   const h = 430;
 
-  fillRounded(ctx, x, y, w, h, 14, "#ffffff", "#cfd4cf", 2);
+  fillRounded(ctx, x, y, w, h, 14, COLORS.panelBg, COLORS.panelBorder, 2);
 
   const bg = ctx.createLinearGradient(x, y, x, y + h);
-  bg.addColorStop(0, "#dbeaf7");
-  bg.addColorStop(1, "#edf4ea");
+  bg.addColorStop(0, COLORS.centerTop);
+  bg.addColorStop(1, COLORS.centerBottom);
+
   fillRounded(ctx, x + 2, y + 2, w - 4, h - 4, 12, bg);
 
   const headerY = y + 18;
@@ -134,7 +155,7 @@ export function drawCenterPanel(ctx, state) {
   const centerX = x + w / 2;
   const rightX = x + w - 26;
 
-  ctx.fillStyle = "#16231d";
+  ctx.fillStyle = COLORS.accent;
   ctx.textBaseline = "top";
   ctx.font = "800 20px system-ui";
 
@@ -150,7 +171,7 @@ export function drawCenterPanel(ctx, state) {
   if (matchDay) {
     ctx.textAlign = "center";
     ctx.font = "800 16px system-ui";
-    ctx.fillStyle = "#415048";
+    ctx.fillStyle = COLORS.accentSoft;
     ctx.fillText(matchDay, centerX, headerY + 28);
   }
 
@@ -175,8 +196,8 @@ export function drawCenterPanel(ctx, state) {
       h: rowH
     };
 
-    fillRounded(ctx, homeCard.x, homeCard.y, homeCard.w, homeCard.h, 14, "rgba(255,255,255,0.96)", "rgba(0,0,0,0.08)", 2);
-    fillRounded(ctx, awayCard.x, awayCard.y, awayCard.w, awayCard.h, 14, "rgba(255,255,255,0.96)", "rgba(0,0,0,0.08)", 2);
+    fillRounded(ctx, homeCard.x, homeCard.y, homeCard.w, homeCard.h, 14, COLORS.cardBg, COLORS.cardBorder, 2);
+    fillRounded(ctx, awayCard.x, awayCard.y, awayCard.w, awayCard.h, 14, COLORS.cardBg, COLORS.cardBorder, 2);
 
     // Heimlogo
     const homeLogoBox = {
@@ -250,7 +271,7 @@ export function drawCenterPanel(ctx, state) {
 
 export function drawPoster(ctx, width, height, state) {
   ctx.clearRect(0, 0, width, height);
-  ctx.fillStyle = "#f4f5f3";
+  ctx.fillStyle = COLORS.pageBg;
   ctx.fillRect(0, 0, width, height);
 
   // Platzhalter

@@ -142,14 +142,14 @@ els.homeName.value = DEFAULTS.homeName;
 els.homeLogoPath.value = DEFAULTS.homeLogoPath;
 render();
 
-document.getElementById("homeSquad0").value = "Damen";
-document.getElementById("oppName0").value = "GS Cappenberg Damen";
-document.getElementById("oppTime0").value = "17:15";
+document.getElementById("homeSquad0").value = "II";
+document.getElementById("oppName0").value = "Holzwickeder Sport Club";
+document.getElementById("oppTime0").value = "13:00";
 
-document.getElementById("homeSquad1").value = "Damen";
-document.getElementById("oppName1").value = "TuS Niederaden Damen";
-document.getElementById("oppTime1").value = "15:00";
+document.getElementById("homeSquad1").value = "I";
+document.getElementById("oppName1").value = "FC Overberge";
+document.getElementById("oppTime1").value = "15:15";
 
 document.getElementById("homeSquad2").value = "Damen";
-document.getElementById("oppName2").value = "VfL Kamen Damen";
-document.getElementById("oppTime2").value = "16:30";
+document.getElementById("oppName2").value = "SuS Rünthe";
+document.getElementById("oppTime2").value = "17:15";
