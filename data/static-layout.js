@@ -29,28 +29,32 @@ export const BASE_H = 1200;
 
 // Sponsoren mit Informationen aus sponsors.js
 export const SPONSOR_TILES = [
-  // obere Reihe
-  { sponsorId: "stations_grill",              x: 20,   y: 20,  w: 290, h: 320 },
-  { sponsorId: "fleischer_kralemann",         x: 330,  y: 20,  w: 300, h: 130 },
-  { sponsorId: "la_romantica_da_luigi",       x: 650,  y: 20,  w: 500, h: 130 },
-  { sponsorId: "getraenke_lucas",             x: 1170, y: 20,  w: 410, h: 320 },
+  // links / rechts groß
+  { sponsorId: "stations_grill",            x: 20,   y: 20,  w: 290, h: 320 },
+  { sponsorId: "getraenke_lucas",           x: 1170, y: 20,  w: 410, h: 320 },
 
-  { sponsorId: "restaurant_roma",             x: 330,  y: 170, w: 820, h: 170 },
+  // obere Mittelreihe
+  { sponsorId: "fleischer_kralemann",       x: 330,  y: 20,  w: 300, h: 130 },
+  { sponsorId: "la_romantica_da_luigi",     x: 650,  y: 20,  w: 500, h: 130 },
+
+  // untere Mittelreihe
+  { sponsorId: "restaurant_roma",           x: 330, y: 170, w: 400, h: 170 },
+  { sponsorId: "dk_bau",                    x: 750,  y: 170, w: 400, h: 170 },
 
   // mittlere Seiten
-  { sponsorId: "via_veneto",                  x: 20,   y: 370, w: 290, h: 470 },
-  { sponsorId: "korfu",                       x: 1170, y: 370, w: 410, h: 470 },
+  { sponsorId: "via_veneto",                x: 20,   y: 370, w: 290, h: 470 },
+  { sponsorId: "korfu",                     x: 1170, y: 370, w: 410, h: 470 },
 
-  // untere obere Reihe: einheitliche Höhe
-  { sponsorId: "salon_dolce_vita",            x: 20,   y: 860, w: 500, h: 110 },
-  { sponsorId: "sparkasse_bergkamen_boenen",  x: 540,  y: 860, w: 520, h: 110 },
-  { sponsorId: "ebb",                         x: 1080, y: 860, w: 500, h: 110 },
+  // untere obere Reihe
+  { sponsorId: "salon_dolce_vita",          x: 20,   y: 860, w: 500, h: 110 },
+  { sponsorId: "sparkasse_bergkamen_boenen",x: 540,  y: 860, w: 520, h: 110 },
+  { sponsorId: "ebb",                       x: 1080, y: 860, w: 500, h: 110 },
 
-  // untere untere Reihe: einheitliche Höhe
-  { sponsorId: "schaefer_fenster_tueren",     x: 20,   y: 990, w: 370, h: 170 },
-  { sponsorId: "schaefer_kretschmer_bestattungen",       x: 410,  y: 990, w: 370, h: 170 },
-  { sponsorId: "hoer_bedachungen",            x: 800,  y: 990, w: 370, h: 170 },
-  { sponsorId: "druckerei_trost",             x: 1190, y: 990, w: 390, h: 170 }
+  // untere untere Reihe
+  { sponsorId: "schaefer_fenster_tueren",   x: 20,   y: 990, w: 370, h: 170 },
+  { sponsorId: "schaefer_kretschmer",       x: 410,  y: 990, w: 370, h: 170 },
+  { sponsorId: "hoer_bedachungen",          x: 800,  y: 990, w: 370, h: 170 },
+  { sponsorId: "druckerei_trost",           x: 1190, y: 990, w: 390, h: 170 }
 ];
 
 export const DEFAULTS = {

@@ -24,18 +24,47 @@ export function drawSponsorTile(ctx, sponsor, tile) {
 
   fillRounded(ctx, x, y, w, h, 12, "#ffffff", "#cfd4cf", 2);
 
-  const isSmall = h <= 110;
-  const isMedium = h > 110 && h <= 190;
-  const isLarge = h > 190;
-
-  const centerX = x + w / 2;
+  const layout = sponsor.layout || "horizontal";
   const hasLogo = !!sponsor.logoImage;
 
-  // --------------------------------------------------
-  // Variante 1: Text links / Logo rechts
-  // --------------------------------------------------
-  if (sponsor.layout === "text-logo" && hasLogo) {
+  if (layout === "logo-only" && hasLogo) {
+    drawContain(ctx, sponsor.logoImage, x + 18, y + 18, w - 36, h - 36, 2);
+    return;
+  }
 
+  if (layout === "vertical") {
+    ctx.save();
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+
+    let cursorY = y + 14;
+
+    ctx.fillStyle = "#1f2c25";
+    const nameSize = fitText(ctx, sponsor.name, w - 28, 22, 13, 800);
+    ctx.font = `800 ${nameSize}px system-ui`;
+    ctx.fillText(sponsor.name, x + w / 2, cursorY);
+    cursorY += nameSize + 6;
+
+    if (sponsor.subtitle) {
+      ctx.fillStyle = "#5e6b65";
+      ctx.font = "600 12px system-ui";
+      ctx.fillText(sponsor.subtitle, x + w / 2, cursorY);
+      cursorY += 18;
+    }
+
+    const logoTop = cursorY + 8;
+    const logoBottom = y + h - 18;
+    const logoH = Math.max(60, logoBottom - logoTop);
+
+    if (hasLogo) {
+      drawContain(ctx, sponsor.logoImage, x + 18, logoTop, w - 36, logoH, 2);
+    }
+
+    ctx.restore();
+    return;
+  }
+
+  // default: horizontal
   const pad = 16;
   const gap = 16;
 
@@ -44,142 +73,48 @@ export function drawSponsorTile(ctx, sponsor, tile) {
 
   const textX = x + pad;
   const logoX = x + w - pad - logoW;
-
   const centerY = y + h / 2;
 
   ctx.save();
   ctx.textAlign = "left";
   ctx.textBaseline = "middle";
 
-  // Titel
   ctx.fillStyle = "#1f2c25";
-
-  const nameSize = fitText(
-    ctx,
-    sponsor.name,
-    textW,
-    26,
-    14,
-    800
-  );
-
+  const nameSize = fitText(ctx, sponsor.name, textW, 24, 12, 800);
   ctx.font = `800 ${nameSize}px system-ui`;
+
+  const hasSubtitle = !!sponsor.subtitle;
 
   ctx.fillText(
     sponsor.name,
     textX,
-    centerY - (sponsor.subtitle ? nameSize * 0.4 : 0)
+    centerY - (hasSubtitle ? 12 : 0)
   );
 
-  // Subtitle optional
-  if (sponsor.subtitle) {
-
+  if (hasSubtitle) {
     ctx.fillStyle = "#5e6b65";
+    ctx.font = "600 13px system-ui";
+    ctx.fillText(sponsor.subtitle, textX, centerY + 12);
+  }
 
-    ctx.font = "600 14px system-ui";
+  ctx.restore();
 
-    ctx.fillText(
-      sponsor.subtitle,
-      textX,
-      centerY + nameSize * 0.6
+  if (hasLogo) {
+    const logoH = h * 0.68;
+    drawContain(
+      ctx,
+      sponsor.logoImage,
+      logoX,
+      centerY - logoH / 2,
+      logoW,
+      logoH,
+      2
     );
   }
-
-  ctx.restore();
-
-  // Logo rechts – ebenfalls vertikal zentriert
-  const logoH = h * 0.65;
-
-  drawContain(
-    ctx,
-    sponsor.logoImage,
-    logoX,
-    centerY - logoH / 2,
-    logoW,
-    logoH,
-    2
-  );
-
-  return;
-}
-
-  // --------------------------------------------------
-  // Variante 2: Standard – Titel oben / Logo unten
-  // --------------------------------------------------
-  const topPad = 14;
-  const sidePad = 14;
-  const bottomPad = 14;
-
-  ctx.save();
-  ctx.textAlign = "center";
-  ctx.textBaseline = "top";
-
-  let cursorY = y + topPad;
-
-  // Titel
-  ctx.fillStyle = "#1f2c25";
-  const nameMaxWidth = w - sidePad * 2;
-  const nameSize = isSmall
-    ? fitText(ctx, sponsor.name, nameMaxWidth, 16, 11, 800)
-    : isMedium
-      ? fitText(ctx, sponsor.name, nameMaxWidth, 21, 13, 800)
-      : fitText(ctx, sponsor.name, nameMaxWidth, 27, 15, 800);
-
-  ctx.font = `800 ${nameSize}px system-ui`;
-  ctx.fillText(sponsor.name, centerX, cursorY);
-  cursorY += nameSize + 6;
-
-  // Subtitle
-  if (sponsor.subtitle && !isSmall) {
-    ctx.fillStyle = "#5e6b65";
-    const subtitleSize = isMedium ? 12 : 14;
-    ctx.font = `600 ${subtitleSize}px system-ui`;
-    ctx.fillText(sponsor.subtitle, centerX, cursorY);
-    cursorY += subtitleSize + 6;
-  }
-
-  // Zusatzzeilen
-  let maxLines = 0;
-  if (isLarge && !hasLogo) maxLines = 2;
-  if (isLarge && hasLogo) maxLines = 1;
-  if (isMedium && !hasLogo) maxLines = 1;
-
-  const lines = (sponsor.lines || []).slice(0, maxLines);
-
-  if (lines.length) {
-    ctx.fillStyle = "#5e6b65";
-    ctx.font = "500 12px system-ui";
-
-    for (const line of lines) {
-      ctx.fillText(line, centerX, cursorY);
-      cursorY += 16;
-    }
-  }
-
-  // Logo unten
-  if (hasLogo) {
-
-  const logoTop = cursorY + 6;
-  const logoBottom = y + h - bottomPad;
-
-  const logoH = Math.max(40, logoBottom - logoTop);
-
-  drawContain(
-    ctx,
-    sponsor.logoImage,
-    x + 18,
-    logoTop,
-    w - 36,
-    logoH,
-    2
-  );
-}
-
-  ctx.restore();
 }
 
 export function drawCenterPanel(ctx, state) {
-  const { matches, homeName, matchDay, homeLogo } = state;
+  const { matches, matchDay, homeLogo } = state;
   const visible = matches.slice(0, 3);
 
   const x = 330;
@@ -194,116 +129,122 @@ export function drawCenterPanel(ctx, state) {
   bg.addColorStop(1, "#edf4ea");
   fillRounded(ctx, x + 2, y + 2, w - 4, h - 4, 12, bg);
 
-  const leftColX = x + 24;
-  const leftColW = 250;
-
-  const rightColX = x + 315;
-  const rightColW = w - (rightColX - x) - 24;
-
-  // Kopfzeile
   const headerY = y + 18;
+  const leftX = x + 26;
+  const centerX = x + w / 2;
+  const rightX = x + w - 26;
 
   ctx.fillStyle = "#16231d";
   ctx.textBaseline = "top";
+  ctx.font = "800 20px system-ui";
 
   ctx.textAlign = "left";
-  const titleSize = fitText(ctx, homeName, leftColW, 28, 20, 900);
-  ctx.font = `900 ${titleSize}px system-ui`;
-  ctx.fillText(homeName, leftColX, headerY);
+  ctx.fillText("Heim", leftX, headerY);
 
-  ctx.textAlign = "left";
-  ctx.font = "800 21px system-ui";
-  ctx.fillText("Begegnungen", rightColX, headerY + 3);
+  ctx.textAlign = "center";
+  ctx.fillText("Anpfiff", centerX, headerY);
 
-  // gemeinsamer Startbereich
-  const contentTop = y + 70;
-
-  // Logo links größer
-  const logoBox = { x: leftColX + 6, y: contentTop, w: 220, h: 220 };
-  const rowH = 72;
-
-  fillRounded(
-    ctx,
-    logoBox.x,
-    logoBox.y,
-    logoBox.w,
-    logoBox.h,
-    20,
-    "rgba(255,255,255,0.90)",
-    "rgba(0,0,0,0.08)",
-    2
-  );
-
-  if (homeLogo) {
-    drawContain(ctx, homeLogo, logoBox.x, logoBox.y, logoBox.w, logoBox.h, 14);
-  } else {
-    ctx.fillStyle = "#7a857f";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.font = "700 20px system-ui";
-    ctx.fillText("SuS LOGO", logoBox.x + logoBox.w / 2, logoBox.y + logoBox.h / 2);
-  }
+  ctx.textAlign = "right";
+  ctx.fillText("Gast", rightX, headerY);
 
   if (matchDay) {
-    ctx.fillStyle = "#31423a";
     ctx.textAlign = "center";
-    ctx.textBaseline = "top";
-    ctx.font = "800 20px system-ui";
-    ctx.fillText(matchDay, logoBox.x + logoBox.w / 2, logoBox.y + logoBox.h + 16);
+    ctx.font = "800 16px system-ui";
+    ctx.fillStyle = "#415048";
+    ctx.fillText(matchDay, centerX, headerY + 28);
   }
 
-
-
-  // Begegnungen rechts – höher und über mehr Fläche verteilt
-  // const rowH = 68;
-  const rowGap = 14;
-  const rowsTop = contentTop;
+  const rowsTop = y + 90;
+  const rowGap = 12;
+  const rowH = 86;
 
   visible.forEach((m, i) => {
     const ry = rowsTop + i * (rowH + rowGap);
 
-    fillRounded(
-      ctx,
-      rightColX,
-      ry,
-      rightColW,
-      rowH,
-      14,
-      "rgba(255,255,255,0.96)",
-      "rgba(0,0,0,0.08)",
-      2
-    );
+    const homeCard = {
+      x: x + 24,
+      y: ry,
+      w: 275,
+      h: rowH
+    };
 
-    const lx = rightColX + 12;
-    const ly = ry + 8;
-    const ls = rowH - 16;
+    const awayCard = {
+      x: x + w - 24 - 275,
+      y: ry,
+      w: 275,
+      h: rowH
+    };
 
-    fillRounded(ctx, lx, ly, ls, ls, 10, "#f1f3f1", "rgba(0,0,0,0.06)", 1.5);
+    fillRounded(ctx, homeCard.x, homeCard.y, homeCard.w, homeCard.h, 14, "rgba(255,255,255,0.96)", "rgba(0,0,0,0.08)", 2);
+    fillRounded(ctx, awayCard.x, awayCard.y, awayCard.w, awayCard.h, 14, "rgba(255,255,255,0.96)", "rgba(0,0,0,0.08)", 2);
+
+    // Heimlogo
+    const homeLogoBox = {
+      x: homeCard.x + 10,
+      y: homeCard.y + 10,
+      w: 66,
+      h: homeCard.h - 20
+    };
+
+    fillRounded(ctx, homeLogoBox.x, homeLogoBox.y, homeLogoBox.w, homeLogoBox.h, 10, "#f8f9f8", "rgba(0,0,0,0.06)", 1.5);
+
+    if (homeLogo) {
+      drawContain(ctx, homeLogo, homeLogoBox.x + 5, homeLogoBox.y + 5, homeLogoBox.w - 10, homeLogoBox.h - 10, 2);
+    }
+
+    // Heimtext vertikal zentriert
+    const homeTextX = homeLogoBox.x + homeLogoBox.w + 12;
+    const homeTextW = homeCard.w - (homeTextX - homeCard.x) - 12;
+    const homeCenterY = homeCard.y + homeCard.h / 2;
+
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#17251e";
+
+    ctx.font = "800 16px system-ui";
+    ctx.fillText("SuS Oberaden", homeTextX, homeCenterY - 12);
+
+    ctx.fillStyle = "#415048";
+    ctx.font = "700 13px system-ui";
+    ctx.fillText(m.homeSquad || "", homeTextX, homeCenterY + 10);
+
+    // Uhrzeit in der Mitte
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#111d17";
+    ctx.font = "900 22px system-ui";
+    ctx.fillText(m.time || "", centerX, ry + rowH / 2);
+
+    // Gastlogo
+    const awayLogoBox = {
+      x: awayCard.x + 10,
+      y: awayCard.y + 10,
+      w: 66,
+      h: awayCard.h - 20
+    };
+
+    fillRounded(ctx, awayLogoBox.x, awayLogoBox.y, awayLogoBox.w, awayLogoBox.h, 10, "#f1f3f1", "rgba(0,0,0,0.06)", 1.5);
 
     if (m.logo) {
-      drawContain(ctx, m.logo, lx, ly, ls, ls, 5);
+      drawContain(ctx, m.logo, awayLogoBox.x + 5, awayLogoBox.y + 5, awayLogoBox.w - 10, awayLogoBox.h - 10, 2);
     } else {
       ctx.fillStyle = "#7f8a84";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.font = "800 10px system-ui";
-      ctx.fillText("LOGO", lx + ls / 2, ly + ls / 2);
+      ctx.fillText("LOGO", awayLogoBox.x + awayLogoBox.w / 2, awayLogoBox.y + awayLogoBox.h / 2);
     }
 
-    const oppX = lx + ls + 12;
-    const oppW = 210;
-    const oppSize = fitText(ctx, m.opponent, oppW, 18, 12, 800);
+    // Gasttext vertikal zentriert
+    const awayTextX = awayLogoBox.x + awayLogoBox.w + 12;
+    const awayTextW = awayCard.w - (awayTextX - awayCard.x) - 12;
+    const awaySize = fitText(ctx, m.opponent || "Gegner", awayTextW, 17, 12, 800);
 
     ctx.fillStyle = "#17251e";
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
-    ctx.font = `800 ${oppSize}px system-ui`;
-    ctx.fillText(m.opponent, oppX, ry + rowH / 2);
-
-    ctx.textAlign = "right";
-    ctx.fillStyle = "#111d17";
-    ctx.font = "900 20px system-ui";
-    ctx.fillText(m.time, rightColX + rightColW - 12, ry + rowH / 2 + 6);
+    ctx.font = `800 ${awaySize}px system-ui`;
+    ctx.fillText(m.opponent || "Gegner", awayTextX, awayCard.y + awayCard.h / 2);
   });
 }
 
