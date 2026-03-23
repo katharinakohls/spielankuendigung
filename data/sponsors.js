@@ -15,9 +15,9 @@ export const SPONSORS = {
     lines: []
   },
 
-  la_romantica_da_luigi: {
-    name: "La Romantica Da Luigi",
-    logo: "assets/sponsors/romantica.png",
+  ergotherapie_langner: {
+    name: "Ergotherapie Langner",
+    logo: "assets/sponsors/ergo_langner.png",
     layout: "horizontal",
     subtitle: null,
     lines: []

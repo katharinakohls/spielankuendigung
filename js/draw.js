@@ -3,10 +3,10 @@ import { SPONSORS } from "../data/sponsors.js";
 import { fillRounded, fitText, drawContain } from "./utils.js";
 
 const COLORS = {
-  pageBg: "#e3f1d5",
+  pageBg: "#5dd367",
 
   panelBg: "#ffffff",
-  panelBorder: "#C9D1C8",
+  panelBorder: "#337338",
 
   textPrimary: "#1E2A22",
   textSecondary: "#617066",
@@ -14,8 +14,8 @@ const COLORS = {
   accent: "#000000",        // Hauptgrün
   accentSoft: "#000000",
 
-  centerTop: "#c1dfa1",
-  centerBottom: "#F1F6F2",
+  centerTop: "#EEF5F0",
+  centerBottom: "#F7FAF7",
 
   cardBorder: "rgba(30,107,67,0.12)",
   cardBg: "rgba(255,255,255,0.96)"
@@ -41,7 +41,7 @@ const COLORS = {
 export function drawSponsorTile(ctx, sponsor, tile) {
   const { x, y, w, h } = tile;
 
-  fillRounded(ctx, x, y, w, h, 12, COLORS.panelBg, COLORS.panelBorder, 2);
+  fillRounded(ctx, x, y, w, h, 12, COLORS.panelBg, COLORS.panelBorder, 4);
 
   const layout = sponsor.layout || "horizontal";
   const hasLogo = !!sponsor.logoImage;
@@ -133,7 +133,6 @@ export function drawSponsorTile(ctx, sponsor, tile) {
 }
 
 export function drawCenterPanel(ctx, state) {
-  
   const { matches, matchDay, homeLogo } = state;
   const visible = matches.slice(0, 3);
 
@@ -142,126 +141,175 @@ export function drawCenterPanel(ctx, state) {
   const w = 820;
   const h = 430;
 
-  fillRounded(ctx, x, y, w, h, 14, COLORS.panelBg, COLORS.panelBorder, 2);
+  fillRounded(ctx, x, y, w, h, 14, COLORS.panelBg, COLORS.panelBorder, 4);
 
   const bg = ctx.createLinearGradient(x, y, x, y + h);
-  bg.addColorStop(0, COLORS.centerTop);
-  bg.addColorStop(1, COLORS.centerBottom);
-
+  bg.addColorStop(0, "#EEF5F0");
+  bg.addColorStop(1, "#F7FAF7");
   fillRounded(ctx, x + 2, y + 2, w - 4, h - 4, 12, bg);
 
-  const headerY = y + 18;
-  const leftX = x + 26;
   const centerX = x + w / 2;
-  const rightX = x + w - 26;
 
-  ctx.fillStyle = COLORS.accent;
-  ctx.textBaseline = "top";
-  ctx.font = "800 20px system-ui";
-
-  ctx.textAlign = "left";
-  ctx.fillText("Heim", leftX, headerY);
-
-  ctx.textAlign = "center";
-  ctx.fillText("Anpfiff", centerX, headerY);
-
-  ctx.textAlign = "right";
-  ctx.fillText("Gast", rightX, headerY);
-
+  // Datum größer und prominenter
   if (matchDay) {
     ctx.textAlign = "center";
-    ctx.font = "800 16px system-ui";
-    ctx.fillStyle = COLORS.accentSoft;
-    ctx.fillText(matchDay, centerX, headerY + 28);
+    ctx.textBaseline = "top";
+    ctx.fillStyle = COLORS.accent;
+    ctx.font = "900 28px system-ui";
+    ctx.fillText(matchDay, centerX, y + 18);
   }
 
-  const rowsTop = y + 90;
+  // Karten weiter nach oben
+  const rowsTop = y + 68;
   const rowGap = 12;
-  const rowH = 86;
+  const rowH = 96;
+
+  // Heim/Gast-Karten breiter
+  const cardW = 320;
+  const leftCardX = x + 18;
+  const rightCardX = x + w - 18 - cardW;
 
   visible.forEach((m, i) => {
     const ry = rowsTop + i * (rowH + rowGap);
 
     const homeCard = {
-      x: x + 24,
+      x: leftCardX,
       y: ry,
-      w: 275,
+      w: cardW,
       h: rowH
     };
 
     const awayCard = {
-      x: x + w - 24 - 275,
+      x: rightCardX,
       y: ry,
-      w: 275,
+      w: cardW,
       h: rowH
     };
 
-    fillRounded(ctx, homeCard.x, homeCard.y, homeCard.w, homeCard.h, 14, COLORS.cardBg, COLORS.cardBorder, 2);
-    fillRounded(ctx, awayCard.x, awayCard.y, awayCard.w, awayCard.h, 14, COLORS.cardBg, COLORS.cardBorder, 2);
+    fillRounded(
+      ctx,
+      homeCard.x,
+      homeCard.y,
+      homeCard.w,
+      homeCard.h,
+      14,
+      "#FFFFFF",
+      COLORS.cardBorder,
+      4
+    );
+
+    fillRounded(
+      ctx,
+      awayCard.x,
+      awayCard.y,
+      awayCard.w,
+      awayCard.h,
+      14,
+      "#FFFFFF",
+      COLORS.cardBorder,
+      4
+    );
 
     // Heimlogo
     const homeLogoBox = {
       x: homeCard.x + 10,
       y: homeCard.y + 10,
-      w: 66,
+      w: 76,
       h: homeCard.h - 20
     };
 
-    fillRounded(ctx, homeLogoBox.x, homeLogoBox.y, homeLogoBox.w, homeLogoBox.h, 10, "#f8f9f8", "rgba(0,0,0,0.06)", 1.5);
+    fillRounded(
+      ctx,
+      homeLogoBox.x,
+      homeLogoBox.y,
+      homeLogoBox.w,
+      homeLogoBox.h,
+      10,
+      "#F8F9F8",
+      "rgba(0,0,0,0.06)",
+      1.5
+    );
 
     if (homeLogo) {
-      drawContain(ctx, homeLogo, homeLogoBox.x + 5, homeLogoBox.y + 5, homeLogoBox.w - 10, homeLogoBox.h - 10, 2);
+      drawContain(
+        ctx,
+        homeLogo,
+        homeLogoBox.x + 6,
+        homeLogoBox.y + 6,
+        homeLogoBox.w - 12,
+        homeLogoBox.h - 12,
+        2
+      );
     }
 
-    // Heimtext vertikal zentriert
+    // Heimtext in einer Zeile
     const homeTextX = homeLogoBox.x + homeLogoBox.w + 12;
     const homeTextW = homeCard.w - (homeTextX - homeCard.x) - 12;
     const homeCenterY = homeCard.y + homeCard.h / 2;
 
+    const homeLabel = m.homeSquad
+      ? `SuS Oberaden ${m.homeSquad}`
+      : "SuS Oberaden";
+
+    const homeSize = fitText(ctx, homeLabel, homeTextW, 22, 14, 800);
+
+    ctx.fillStyle = COLORS.textPrimary;
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
-    ctx.fillStyle = "#17251e";
+    ctx.font = `800 ${homeSize}px system-ui`;
+    ctx.fillText(homeLabel, homeTextX, homeCenterY);
 
-    ctx.font = "800 16px system-ui";
-    ctx.fillText("SuS Oberaden", homeTextX, homeCenterY - 12);
-
-    ctx.fillStyle = "#415048";
-    ctx.font = "700 13px system-ui";
-    ctx.fillText(m.homeSquad || "", homeTextX, homeCenterY + 10);
-
-    // Uhrzeit in der Mitte
+    // Uhrzeit in der Mitte größer
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillStyle = "#111d17";
-    ctx.font = "900 22px system-ui";
+    ctx.fillStyle = COLORS.accent;
+    ctx.font = "900 32px system-ui";
     ctx.fillText(m.time || "", centerX, ry + rowH / 2);
 
     // Gastlogo
     const awayLogoBox = {
       x: awayCard.x + 10,
       y: awayCard.y + 10,
-      w: 66,
+      w: 76,
       h: awayCard.h - 20
     };
 
-    fillRounded(ctx, awayLogoBox.x, awayLogoBox.y, awayLogoBox.w, awayLogoBox.h, 10, "#f1f3f1", "rgba(0,0,0,0.06)", 1.5);
+    fillRounded(
+      ctx,
+      awayLogoBox.x,
+      awayLogoBox.y,
+      awayLogoBox.w,
+      awayLogoBox.h,
+      10,
+      "#F1F3F1",
+      "rgba(0,0,0,0.06)",
+      1.5
+    );
 
     if (m.logo) {
-      drawContain(ctx, m.logo, awayLogoBox.x + 5, awayLogoBox.y + 5, awayLogoBox.w - 10, awayLogoBox.h - 10, 2);
+      drawContain(
+        ctx,
+        m.logo,
+        awayLogoBox.x + 6,
+        awayLogoBox.y + 6,
+        awayLogoBox.w - 12,
+        awayLogoBox.h - 12,
+        2
+      );
     } else {
-      ctx.fillStyle = "#7f8a84";
+      ctx.fillStyle = "#7F8A84";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.font = "800 10px system-ui";
       ctx.fillText("LOGO", awayLogoBox.x + awayLogoBox.w / 2, awayLogoBox.y + awayLogoBox.h / 2);
     }
 
-    // Gasttext vertikal zentriert
+    // Gasttext größer
     const awayTextX = awayLogoBox.x + awayLogoBox.w + 12;
     const awayTextW = awayCard.w - (awayTextX - awayCard.x) - 12;
-    const awaySize = fitText(ctx, m.opponent || "Gegner", awayTextW, 17, 12, 800);
+    const awaySize = fitText(ctx, m.opponent || "Gegner", awayTextW, 22, 14, 800);
 
-    ctx.fillStyle = "#17251e";
+    ctx.fillStyle = COLORS.textPrimary;
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
     ctx.font = `800 ${awaySize}px system-ui`;

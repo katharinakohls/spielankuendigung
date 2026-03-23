@@ -143,7 +143,7 @@ els.homeLogoPath.value = DEFAULTS.homeLogoPath;
 render();
 
 document.getElementById("homeSquad0").value = "II";
-document.getElementById("oppName0").value = "Holzwickeder Sport Club";
+document.getElementById("oppName0").value = "Holzwickeder SC";
 document.getElementById("oppTime0").value = "13:00";
 
 document.getElementById("homeSquad1").value = "I";

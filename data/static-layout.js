@@ -35,7 +35,7 @@ export const SPONSOR_TILES = [
 
   // obere Mittelreihe
   { sponsorId: "fleischer_kralemann",       x: 330,  y: 20,  w: 300, h: 130 },
-  { sponsorId: "la_romantica_da_luigi",     x: 650,  y: 20,  w: 500, h: 130 },
+  { sponsorId: "ergotherapie_langner",     x: 650,  y: 20,  w: 500, h: 130 },
 
   // untere Mittelreihe
   { sponsorId: "restaurant_roma",           x: 330, y: 170, w: 400, h: 170 },
